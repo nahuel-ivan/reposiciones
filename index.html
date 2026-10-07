@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Sistema de Reposición</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        min-height: 100vh;
+        background: #f4f6f8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 700px;
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.10);
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .header h1 {
+        font-size: 32px;
+        color: #17202a;
+        margin-bottom: 8px;
+    }
+
+    .header p {
+        color: #6b7280;
+        font-size: 16px;
+    }
+
+    .menu {
+        display: grid;
+        gap: 16px;
+    }
+
+    .boton {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        text-decoration: none;
+        color: #17202a;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        padding: 22px;
+        border-radius: 14px;
+        transition: 0.2s;
+    }
+
+    .boton:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        background: #ffffff;
+    }
+
+    .icono {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #17202a;
+        color: white;
+        font-size: 26px;
+        flex-shrink: 0;
+    }
+
+    .texto h2 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .texto p {
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 30px;
+        color: #9ca3af;
+        font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            padding: 25px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<div class="header">
+    <h1>📦 Sistema de Reposición</h1>
+    <p>Gestión de materiales y pedidos</p>
+</div>
+
+<div class="menu">
+
+    <a class="boton" href="escanear.html">
+        <div class="icono">📷</div>
+        <div class="texto">
+            <h2>Escanear puesto</h2>
+            <p>Escanear el código QR y solicitar material</p>
+        </div>
+    </a>
+
+    <a class="boton" href="reposicion.html">
+        <div class="icono">📦</div>
+        <div class="texto">
+            <h2>Reposición</h2>
+            <p>Gestionar materiales pendientes</p>
+        </div>
+    </a>
+
+    <a class="boton" href="historial.html">
+        <div class="icono">🕘</div>
+        <div class="texto">
+            <h2>Historial</h2>
+            <p>Consultar reposiciones realizadas</p>
+        </div>
+    </a>
+
+</div>
+
+<div class="footer">
+    Sistema de gestión de materiales
+</div>
+```
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reposición de Materiales</title>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Lector QR -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f1f4f8;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           ENCABEZADO
+        ========================= */
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 22px 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #d1fae5;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            background: #22c55e;
+            border-radius: 50%;
+        }
+
+        /* =========================
+           CONTENEDOR
+        ========================= */
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px 40px;
+        }
+
+        /* =========================
+           TÍTULO DE SECCIÓN
+        ========================= */
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h2 {
+            font-size: 26px;
+            color: #111827;
+            margin-bottom: 7px;
+        }
+
+        .page-title p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* =========================
+           GRID PRINCIPAL
+        ========================= */
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .card-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+        }
+
+        .card-title h3 {
+            font-size: 18px;
+            color: #111827;
+        }
+
+        .card-title p {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+        /* =========================
+           QR
+        ========================= */
+
+        #reader {
+            width: 100%;
+            max-width: 430px;
+            margin: auto;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        #reader video {
+            border-radius: 12px;
+        }
+
+        /* =========================
+           INPUT MANUAL
+        ========================= */
+
+        .manual {
+            margin-top: 22px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+        }
+
+        .manual label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 13px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        button {
+            border: none;
+            border-radius: 9px;
+            padding: 13px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #334155;
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        /* =========================
+           RESULTADO
+        ========================= */
+
+        #resultado {
+            min-height: 250px;
+        }
+
+        .empty-state {
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h4 {
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+        }
+
+        /* =========================
+           PUESTO
+        ========================= */
+
+        .puesto-header {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .puesto-header small {
+            display: block;
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .puesto-header strong {
+            font-size: 21px;
+            color: #1d4ed8;
+        }
+
+        /* =========================
+           MATERIAL
+        ========================= */
+
+        .material {
+            border: 1px solid #e5e7eb;
+            border-radius: 13px;
+            padding: 18px;
+            margin-bottom: 15px;
+            background: #fff;
+        }
+
+        .material-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .material-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .badge {
+            background: #fef3c7;
+            color: #92400e;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .data-box {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 11px;
+        }
+
+        .data-box.full {
+            grid-column: span 2;
+        }
+
+        .data-box span {
+            display: block;
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .data-box strong {
+            font-size: 15px;
+            color: #111827;
+        }
+
+        .location {
+            color: #2563eb !important;
+            font-size: 17px !important;
+        }
+
+        .success {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #047857;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        /* =========================
+           DEBUG
+        ========================= */
+
+        .debug {
+            margin-top: 25px;
+            background: #0f172a;
+            color: #cbd5e1;
+            border-radius: 12px;
+            padding: 15px;
+            font-family: Consolas, monospace;
+            font-size: 11px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .debug-title {
+            color: white;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 800px) {
+
+            .header-content {
+                align-items: flex-start;
+            }
+
+            .status {
+                display: none;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title h2 {
+                font-size: 22px;
+            }
+
+            main {
+                margin-top: 20px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            header {
+                padding: 17px;
+            }
+
+            .header-title h1 {
+                font-size: 18px;
+            }
+
+            .logo {
+                width: 42px;
+                height: 42px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .input-group button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-content">
+
+        <div class="logo-area">
+
+            <div class="logo">
+                📦
+            </div>
+
+            <div class="header-title">
+                <h1>Reposición de Materiales</h1>
+                <p>Sistema de solicitud de materiales</p>
+            </div>
+
+        </div>
+
+        <div class="status">
+            <div class="status-dot"></div>
+            Sistema conectado
+        </div>
+
+    </div>
+</header>
+
+
+<main>
+
+    <div class="page-title">
+        <h2>Solicitar reposición</h2>
+        <p>Escaneá el código QR del puesto para generar automáticamente el pedido.</p>
+    </div>
+
+
+    <div class="grid">
+
+        <!-- =====================
+             ESCANEAR
+        ====================== -->
+
+        <div class="card">
+
+            <div class="card-title">
+
+                <div class="card-icon">
+                    📷
+                </div>
+
+                <div>
+                    <h3>Escanear puesto</h3>
+                    <p>Apuntá la cámara al código QR</p>
+                </div>
+
+            </div>
+
+
+            <div id="reader"></div>
+
+
+            <div class="manual">
+
+                <label for="codigo">
+                    ¿No podés escanear el QR?
+                </label>
+
+                <div class="input-group">
+
+                    <input
+                        type="text"
+                        id="codigo"
+                        placeholder="Ejemplo: PUESTO-001"
+                        autocomplete="off"
+                    >
+
+                    <button
+                        class="btn-primary"
+                        onclick="buscarPuesto()">
+                        Buscar
+                    </button>
+
+                </div>
+
+                <button
+                    class="btn-secondary"
+                    onclick="nuevoEscaneo()">
+                    ↻ Nuevo escaneo
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================
+             RESULTADO
+        ====================== -->
+
+        <div class="card">
+
+            <div class="card-title">
+
+                <div class="card-icon">
+                    📋
+                </div>
+
+                <div>
+                    <h3>Pedido generado</h3>
+                    <p>Información del material solicitado</p>
+                </div>
+
+            </div>
+
+
+            <div id="resultado">
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        📱
+                    </div>
+
+                    <h4>Esperando escaneo</h4>
+
+                    <p>
+                        Escaneá un puesto para consultar
+                        los materiales.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         DEBUG
+    ====================== -->
+
+    <div class="debug">
+
+        <div class="debug-title">
+            Información del sistema
+        </div>
+
+        <div id="debug">
+            Sistema listo...
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+
+    // =====================================================
+    // CONFIGURACIÓN SUPABASE
+    // =====================================================
+
+    const SUPABASE_URL =
+        "https://zdoscwyvoazrtpofrabg.supabase.co";
+
+    const SUPABASE_KEY =
+        "sb_publishable_N7bJtip-RJo3KTMUtIotKw_UIfk9R_H";
+
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+    let procesando = false;
+
+
+    // =====================================================
+    // DEBUG
+    // =====================================================
+
+    function mostrarDebug(texto) {
+
+        document.getElementById("debug").textContent =
+            texto;
+
+    }
+
+
+    // =====================================================
+    // RESULTADO
+    // =====================================================
+
+    function mostrarResultado(html) {
+
+        document.getElementById("resultado").innerHTML =
+            html;
+
+    }
+
+
+    // =====================================================
+    // ESCANEO QR
+    // =====================================================
+
+    function onScanSuccess(decodedText) {
+
+        if (procesando) {
+            return;
+        }
+
+        procesando = true;
+
+        document.getElementById("codigo").value =
+            decodedText;
+
+        mostrarDebug(
+            "Código QR detectado: [" +
+            decodedText +
+            "]"
+        );
+
+        buscarPuesto();
+
+    }
+
+
+    function onScanError(errorMessage) {
+
+        // No mostramos errores normales
+        // del escáner porque aparecen constantemente.
+    }
+
+
+    // =====================================================
+    // BUSCAR PUESTO
+    // =====================================================
+
+    async function buscarPuesto() {
+
+        const input =
+            document.getElementById("codigo");
+
+        const codigo =
+            input.value.trim();
+
+        if (!codigo) {
+
+            mostrarResultado(`
+                <div class="error">
+                    ⚠️ Ingresá un código de puesto.
+                </div>
+            `);
+
+            procesando = false;
+
+            return;
+        }
+
+
+        mostrarDebug(
+            "Buscando puesto: [" +
+            codigo +
+            "]..."
+        );
+
+
+        mostrarResultado(`
+            <div class="empty-state">
+                <div class="empty-icon">⏳</div>
+                <h4>Consultando...</h4>
+                <p>Buscando información del puesto.</p>
+            </div>
+        `);
+
+
+        // =================================================
+        // BUSCAR PUESTO
+        // =================================================
+
+        const respuestaPuesto =
+            await supabaseClient
+                .from("puestos")
+                .select("*")
+                .eq("codigo", codigo);
+
+
+        mostrarDebug(
+            "Código enviado: [" +
+            codigo +
+            "]\n\n" +
+
+            "Respuesta puestos:\n" +
+
+            JSON.stringify(
+                respuestaPuesto,
+                null,
+                2
+            )
+        );
+
+
+        if (respuestaPuesto.error) {
+
+            mostrarResultado(`
+                <div class="error">
+                    ❌ Error al consultar el puesto.<br><br>
+                    ${respuestaPuesto.error.message}
+                </div>
+            `);
+
+            procesando = false;
+
+            return;
+        }
+
+
+        if (
+            !respuestaPuesto.data ||
+            respuestaPuesto.data.length === 0
+        ) {
+
+            mostrarResultado(`
+                <div class="error">
+                    ❌ Puesto no encontrado.<br><br>
+                    Código buscado: <strong>${codigo}</strong>
+                </div>
+            `);
+
+            procesando = false;
+
+            return;
+        }
+
+
+        const puesto =
+            respuestaPuesto.data[0];
+
+
+        // =================================================
+        // BUSCAR MATERIALES
+        // =================================================
+
+        const respuestaMateriales =
+            await supabaseClient
+                .from("materiales")
+                .select("*")
+                .eq("puesto_id", puesto.id)
+                .eq("activo", true);
+
+
+        if (respuestaMateriales.error) {
+
+            mostrarResultado(`
+                <div class="error">
+                    ❌ Error al consultar los materiales.<br><br>
+                    ${respuestaMateriales.error.message}
+                </div>
+            `);
+
+            mostrarDebug(
+                "Error materiales:\n\n" +
+                JSON.stringify(
+                    respuestaMateriales,
+                    null,
+                    2
+                )
+            );
+
+            procesando = false;
+
+            return;
+        }
+
+
+        const materiales =
+            respuestaMateriales.data;
+
+
+        if (
+            !materiales ||
+            materiales.length === 0
+        ) {
+
+            mostrarResultado(`
+                <div class="error">
+                    ⚠️ El puesto
+                    <strong>${puesto.nombre}</strong>
+                    no tiene materiales configurados.
+                </div>
+            `);
+
+            procesando = false;
+
+            return;
+        }
+
+
+        // =================================================
+        // MOSTRAR PUESTO
+        // =================================================
+
+        let html = `
+
+            <div class="puesto-header">
+
+                <small>Puesto detectado</small>
+
+                <strong>
+                    ${puesto.codigo}
+                </strong>
+
+                <div style="
+                    margin-top:5px;
+                    color:#475569;
+                    font-size:13px;
+                ">
+                    ${puesto.nombre || ""}
+                    ${puesto.linea ? " · " + puesto.linea : ""}
+                </div>
+
+            </div>
+
+        `;
+
+
+        // =================================================
+        // PROCESAR MATERIALES
+        // =================================================
+
+        for (const material of materiales) {
+
+            html += `
+
+                <div class="material">
+
+                    <div class="material-top">
+
+                        <div class="material-title">
+                            Material
+                        </div>
+
+                        <div class="badge">
+                            PENDIENTE
+                        </div>
+
+                    </div>
+
+
+                    <div class="data-grid">
+
+                        <div class="data-box">
+
+                            <span>
+                                Operación
+                            </span>
+
+                            <strong>
+                                ${material.operacion}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="data-box">
+
+                            <span>
+                                Diseño
+                            </span>
+
+                            <strong>
+                                ${material.diseno}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="data-box">
+
+                            <span>
+                                Cantidad
+                            </span>
+
+                            <strong>
+                                ${material.cantidad}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="data-box">
+
+                            <span>
+                                Ubicación
+                            </span>
+
+                            <strong class="location">
+                                ${material.ubicacion}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="success">
+                        ✓ PEDIDO GENERADO CORRECTAMENTE
+                    </div>
+
+                </div>
+
+            `;
+
+
+            // Crear reposición
+
+            await crearReposicion(
+                material,
+                puesto
+            );
+
+        }
+
+
+        mostrarResultado(html);
+
+
+        mostrarDebug(
+            "✓ Pedido generado correctamente.\n\n" +
+
+            "Puesto: " +
+            puesto.codigo +
+
+            "\nMateriales: " +
+            materiales.length
+        );
+
+
+        procesando = false;
+
+    }
+
+
+    // =====================================================
+    // CREAR REPOSICIÓN
+    // =====================================================
+
+    async function crearReposicion(
+        material,
+        puesto
+    ) {
+
+        const { data, error } =
+            await supabaseClient
+                .from("reposiciones")
+                .insert([{
+
+                    material_id:
+                        material.id,
+
+                    puesto_id:
+                        puesto.id,
+
+                    operacion:
+                        material.operacion,
+
+                    diseno:
+                        material.diseno,
+
+                    cantidad:
+                        material.cantidad,
+
+                    ubicacion:
+                        material.ubicacion,
+
+                    operario:
+                        "Operario",
+
+                    estado:
+                        "PENDIENTE"
+
+                }])
+                .select();
+
+
+        if (error) {
+
+            mostrarDebug(
+                "Error creando reposición:\n\n" +
+                JSON.stringify(
+                    error,
+                    null,
+                    2
+                )
+            );
+
+            return;
+
+        }
+
+
+        console.log(
+            "Reposición creada:",
+            data
+        );
+
+    }
+
+
+    // =====================================================
+    // NUEVO ESCANEO
+    // =====================================================
+
+    function nuevoEscaneo() {
+
+        document.getElementById("codigo").value = "";
+
+        mostrarResultado(`
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    📱
+                </div>
+
+                <h4>
+                    Esperando escaneo
+                </h4>
+
+                <p>
+                    Escaneá un puesto para consultar
+                    los materiales.
+                </p>
+
+            </div>
+
+        `);
+
+
+        mostrarDebug(
+            "Sistema listo para un nuevo escaneo..."
+        );
+
+
+        procesando = false;
+
+    }
+
+
+    // =====================================================
+    // INICIAR LECTOR QR
+    // =====================================================
+
+    const scanner =
+        new Html5QrcodeScanner(
+
+            "reader",
+
+            {
+                fps: 10,
+
+                qrbox: {
+                    width: 250,
+                    height: 250
+                },
+
+                rememberLastUsedCamera: true
+            },
+
+            false
+
+        );
+
+
+    scanner.render(
+        onScanSuccess,
+        onScanError
+    );
+
+</script>
+
+</body>
+</html>

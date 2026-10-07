@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reposición de Materiales</title>
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f1f4f8;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+
+        /* ================================
+           HEADER
+        ================================= */
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .connection {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #d1fae5;
+        }
+
+        .connection-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+
+        /* ================================
+           MAIN
+        ================================= */
+
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px 40px;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h2 {
+            font-size: 27px;
+            color: #111827;
+            margin-bottom: 7px;
+        }
+
+        .page-title p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+
+        /* ================================
+           ESTADÍSTICAS
+        ================================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(15,23,42,0.06);
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 7px;
+            text-transform: uppercase;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+
+        /* ================================
+           TOOLBAR
+        ================================= */
+
+        .toolbar {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .toolbar-left {
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .btn-refresh {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 9px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-refresh:hover {
+            background: #1d4ed8;
+        }
+
+
+        /* ================================
+           PEDIDOS
+        ================================= */
+
+        #pedidos {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .pedido {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-left: 5px solid #dc2626;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(15,23,42,0.06);
+        }
+
+
+        /* ================================
+           CABECERA DEL PEDIDO
+        ================================= */
+
+        .pedido-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            gap: 15px;
+        }
+
+        .puesto-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .puesto-icon {
+            width: 45px;
+            height: 45px;
+            background: #eff6ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .puesto-codigo {
+            font-size: 21px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .puesto-nombre {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+        .puesto-linea {
+            font-size: 12px;
+            color: #2563eb;
+            font-weight: bold;
+            margin-top: 3px;
+        }
+
+        .estado {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+
+        /* ================================
+           INFORMACIÓN
+        ================================= */
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .info {
+            background: #f8fafc;
+            border-radius: 9px;
+            padding: 13px;
+        }
+
+        .info span {
+            display: block;
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .info strong {
+            font-size: 17px;
+            color: #111827;
+        }
+
+
+        /* ================================
+           UBICACIÓN
+        ================================= */
+
+        .ubicacion {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 17px;
+        }
+
+        .ubicacion-label {
+            color: #64748b;
+            font-size: 10px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .ubicacion-valor {
+            color: #1d4ed8;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+
+        /* ================================
+           FOOTER
+        ================================= */
+
+        .pedido-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .fecha {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .btn-retirado {
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 13px 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-retirado:hover {
+            background: #15803d;
+        }
+
+
+        /* ================================
+           VACÍO
+        ================================= */
+
+        .empty {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 50px;
+            margin-bottom: 12px;
+        }
+
+        .empty h3 {
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        .empty p {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+
+        /* ================================
+           LOADING
+        ================================= */
+
+        .loading {
+            background: white;
+            border-radius: 14px;
+            padding: 50px;
+            text-align: center;
+            color: #64748b;
+        }
+
+
+        /* ================================
+           RESPONSIVE
+        ================================= */
+
+        @media(max-width: 850px) {
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+
+        @media(max-width: 600px) {
+
+            header {
+                padding: 16px;
+            }
+
+            .header-title h1 {
+                font-size: 18px;
+            }
+
+            .connection {
+                display: none;
+            }
+
+            main {
+                margin-top: 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-refresh {
+                width: 100%;
+            }
+
+            .pedido-header {
+                align-items: flex-start;
+            }
+
+            .estado {
+                font-size: 10px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .ubicacion-valor {
+                font-size: 21px;
+            }
+
+            .pedido-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-retirado {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================
+     HEADER
+=========================================== -->
+
+<header>
+
+    <div class="header-content">
+
+        <div class="logo-area">
+
+            <div class="logo">
+                📦
+            </div>
+
+            <div class="header-title">
+
+                <h1>
+                    Reposición de Materiales
+                </h1>
+
+                <p>
+                    Panel del repositor
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="connection">
+
+            <div class="connection-dot"></div>
+
+            Sistema conectado
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- ==========================================
+     CONTENIDO
+=========================================== -->
+
+<main>
+
+
+    <div class="page-title">
+
+        <h2>
+            Pedidos pendientes
+        </h2>
+
+        <p>
+            Materiales solicitados por los puestos de línea.
+        </p>
+
+    </div>
+
+
+
+    <!-- ======================================
+         ESTADÍSTICAS
+    ======================================= -->
+
+    <div class="stats">
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Pendientes
+            </div>
+
+            <div
+                class="stat-number"
+                id="totalPendientes">
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Pedidos de hoy
+            </div>
+
+            <div
+                class="stat-number"
+                id="totalHoy">
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Total histórico
+            </div>
+
+            <div
+                class="stat-number"
+                id="totalHistorico">
+
+                0
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ======================================
+         TOOLBAR
+    ======================================= -->
+
+    <div class="toolbar">
+
+        <div class="toolbar-left">
+
+            Última actualización:
+
+            <strong id="ultimaActualizacion">
+                -
+            </strong>
+
+        </div>
+
+
+        <button
+            class="btn-refresh"
+            onclick="cargarPedidos()">
+
+            ↻ Actualizar pedidos
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ======================================
+         PEDIDOS
+    ======================================= -->
+
+    <div id="pedidos">
+
+        <div class="loading">
+
+            ⏳
+
+            <br><br>
+
+            Cargando pedidos...
+
+        </div>
+
+    </div>
+
+
+</main>
+
+
+
+<script>
+
+
+    // ==========================================
+    // SUPABASE
+    // ==========================================
+
+    const SUPABASE_URL =
+        "https://zdoscwyvoazrtpofrabg.supabase.co";
+
+
+    const SUPABASE_KEY =
+        "sb_publishable_N7bJtip-RJo3KTMUtIotKw_UIfk9R_H";
+
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+
+    // ==========================================
+    // CARGAR PEDIDOS
+    // ==========================================
+
+    async function cargarPedidos() {
+
+
+        const contenedor =
+            document.getElementById("pedidos");
+
+
+        contenedor.innerHTML = `
+
+            <div class="loading">
+
+                ⏳
+
+                <br><br>
+
+                Cargando pedidos...
+
+            </div>
+
+        `;
+
+
+        // ======================================
+        // PEDIDOS
+        // ======================================
+
+        const pendientes =
+            await supabaseClient
+
+                .from("reposiciones")
+
+                .select("*")
+
+                .eq(
+                    "estado",
+                    "PENDIENTE"
+                )
+
+                .order(
+                    "fecha_hora",
+                    {
+                        ascending: true
+                    }
+                );
+
+
+        if (pendientes.error) {
+
+            contenedor.innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        ❌
+                    </div>
+
+                    <h3>
+                        Error al cargar pedidos
+                    </h3>
+
+                    <p>
+                        ${pendientes.error.message}
+                    </p>
+
+                </div>
+
+            `;
+
+            console.error(
+                pendientes.error
+            );
+
+            return;
+
+        }
+
+
+        const pedidos =
+            pendientes.data || [];
+
+
+        // ======================================
+        // PENDIENTES
+        // ======================================
+
+        document.getElementById(
+            "totalPendientes"
+        ).textContent =
+            pedidos.length;
+
+
+        // ======================================
+        // PEDIDOS DE HOY
+        // ======================================
+
+        const inicioHoy =
+            new Date();
+
+        inicioHoy.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        const pedidosHoy =
+            pedidos.filter(
+                pedido => {
+
+                    if (
+                        !pedido.fecha_hora
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    return (
+                        new Date(
+                            pedido.fecha_hora
+                        ) >= inicioHoy
+                    );
+
+                }
+            );
+
+
+        document.getElementById(
+            "totalHoy"
+        ).textContent =
+            pedidosHoy.length;
+
+
+        // ======================================
+        // HISTÓRICO
+        // ======================================
+
+        const historico =
+            await supabaseClient
+
+                .from("reposiciones")
+
+                .select(
+                    "id",
+                    {
+                        count: "exact",
+                        head: true
+                    }
+                );
+
+
+        if (!historico.error) {
+
+            document.getElementById(
+                "totalHistorico"
+            ).textContent =
+                historico.count || 0;
+
+        }
+
+
+        // ======================================
+        // ACTUALIZACIÓN
+        // ======================================
+
+        document.getElementById(
+            "ultimaActualizacion"
+        ).textContent =
+            new Date()
+                .toLocaleTimeString(
+                    "es-AR",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                );
+
+
+        // ======================================
+        // SIN PEDIDOS
+        // ======================================
+
+        if (
+            pedidos.length === 0
+        ) {
+
+            contenedor.innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        ✅
+                    </div>
+
+                    <h3>
+                        No hay pedidos pendientes
+                    </h3>
+
+                    <p>
+                        Todos los materiales están al día.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        // ======================================
+        // OBTENER PUESTOS
+        // ======================================
+
+        const idsPuestos =
+            [
+                ...new Set(
+                    pedidos.map(
+                        pedido =>
+                            pedido.puesto_id
+                    )
+                )
+            ];
+
+
+        const puestosRespuesta =
+            await supabaseClient
+
+                .from("puestos")
+
+                .select("*")
+
+                .in(
+                    "id",
+                    idsPuestos
+                );
+
+
+        if (
+            puestosRespuesta.error
+        ) {
+
+            console.error(
+                puestosRespuesta.error
+            );
+
+        }
+
+
+        const puestos =
+            puestosRespuesta.data || [];
+
+
+        // ======================================
+        // CREAR MAPA DE PUESTOS
+        // ======================================
+
+        const mapaPuestos = {};
+
+
+        puestos.forEach(
+            puesto => {
+
+                mapaPuestos[
+                    puesto.id
+                ] = puesto;
+
+            }
+        );
+
+
+        // ======================================
+        // CREAR HTML
+        // ======================================
+
+        let html = "";
+
+
+        pedidos.forEach(
+            pedido => {
+
+                const puesto =
+                    mapaPuestos[
+                        pedido.puesto_id
+                    ];
+
+
+                html += crearPedidoHTML(
+                    pedido,
+                    puesto
+                );
+
+            }
+        );
+
+
+        contenedor.innerHTML =
+            html;
+
+    }
+
+
+
+    // ==========================================
+    // HTML PEDIDO
+    // ==========================================
+
+    function crearPedidoHTML(
+        pedido,
+        puesto
+    ) {
+
+
+        const fecha =
+            pedido.fecha_hora
+                ? new Date(
+                    pedido.fecha_hora
+                ).toLocaleString(
+                    "es-AR"
+                )
+                : "-";
+
+
+        const codigoPuesto =
+            puesto
+                ? puesto.codigo
+                : "PUESTO-" +
+                  pedido.puesto_id;
+
+
+        const nombrePuesto =
+            puesto
+                ? (
+                    puesto.nombre ||
+                    "Sin nombre"
+                )
+                : "Puesto no encontrado";
+
+
+        const lineaPuesto =
+            puesto
+                ? (
+                    puesto.linea ||
+                    ""
+                )
+                : "";
+
+
+        return `
+
+            <div
+                class="pedido"
+                id="pedido-${pedido.id}">
+
+
+                <!-- CABECERA -->
+
+                <div class="pedido-header">
+
+
+                    <div class="puesto-info">
+
+
+                        <div class="puesto-icon">
+                            📍
+                        </div>
+
+
+                        <div>
+
+                            <div class="puesto-codigo">
+
+                                ${codigoPuesto}
+
+                            </div>
+
+
+                            <div class="puesto-nombre">
+
+                                ${nombrePuesto}
+
+                            </div>
+
+
+                            ${
+                                lineaPuesto
+                                ? `
+                                    <div class="puesto-linea">
+                                        ${lineaPuesto}
+                                    </div>
+                                `
+                                : ""
+                            }
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="estado">
+
+                        🔴 ${pedido.estado}
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- DATOS -->
+
+                <div class="info-grid">
+
+
+                    <div class="info">
+
+                        <span>
+                            Operación
+                        </span>
+
+                        <strong>
+                            ${pedido.operacion}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span>
+                            Diseño
+                        </span>
+
+                        <strong>
+                            ${pedido.diseno}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span>
+                            Cantidad
+                        </span>
+
+                        <strong>
+                            ${pedido.cantidad}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- UBICACIÓN -->
+
+                <div class="ubicacion">
+
+
+                    <div class="ubicacion-label">
+
+                        📦 UBICACIÓN DEL MATERIAL
+
+                    </div>
+
+
+                    <div class="ubicacion-valor">
+
+                        ${pedido.ubicacion}
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- FOOTER -->
+
+                <div class="pedido-footer">
+
+
+                    <div class="fecha">
+
+                        🕐
+
+                        Pedido realizado:
+                        ${fecha}
+
+                    </div>
+
+
+                    <button
+                        class="btn-retirado"
+                        onclick="
+                            marcarRetirado(
+                                ${pedido.id}
+                            )
+                        ">
+
+                        ✓ MARCAR COMO RETIRADO
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+        `;
+
+    }
+
+
+
+    // ==========================================
+    // MARCAR RETIRADO
+    // ==========================================
+
+    async function marcarRetirado(
+        id
+    ) {
+
+
+        const confirmar =
+            confirm(
+                "¿Confirmás que retiraste este material?"
+            );
+
+
+        if (!confirmar) {
+
+            return;
+
+        }
+
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+
+            .from("reposiciones")
+
+            .update({
+
+                estado:
+                    "RETIRADO",
+
+                retirado_por:
+                    "Repositor",
+
+                retirado_at:
+                    new Date()
+                        .toISOString()
+
+            })
+
+            .eq(
+                "id",
+                id
+            )
+
+            .select();
+
+
+        if (error) {
+
+            alert(
+                "❌ No se pudo actualizar el pedido:\n\n" +
+                error.message
+            );
+
+            console.error(
+                error
+            );
+
+            return;
+
+        }
+
+
+        // ======================================
+        // ACTUALIZAR
+        // ======================================
+
+        cargarPedidos();
+
+    }
+
+
+
+    // ==========================================
+    // INICIAR
+    // ==========================================
+
+    cargarPedidos();
+
+
+
+    // ==========================================
+    // ACTUALIZACIÓN AUTOMÁTICA
+    // ==========================================
+
+    setInterval(
+        cargarPedidos,
+        15000
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

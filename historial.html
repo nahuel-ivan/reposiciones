@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Historial de Reposiciones</title>
+
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f1f4f8;
+
+            color: #1f2937;
+
+            min-height: 100vh;
+
+        }
+
+
+        /* ======================================
+           HEADER
+        ====================================== */
+
+        header {
+
+            background: #111827;
+
+            color: white;
+
+            padding: 20px 30px;
+
+            box-shadow:
+                0 3px 10px
+                rgba(0,0,0,0.15);
+
+        }
+
+
+        .header-content {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+        }
+
+
+        .logo-area {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+        }
+
+
+        .logo {
+
+            width: 48px;
+
+            height: 48px;
+
+            border-radius: 12px;
+
+            background: #2563eb;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 24px;
+
+        }
+
+
+        .header-title h1 {
+
+            font-size: 22px;
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .header-title p {
+
+            font-size: 13px;
+
+            color: #cbd5e1;
+
+        }
+
+
+        .connection {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 13px;
+
+            color: #d1fae5;
+
+        }
+
+
+        .connection-dot {
+
+            width: 9px;
+
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+        }
+
+
+        /* ======================================
+           MAIN
+        ====================================== */
+
+        main {
+
+            max-width: 1200px;
+
+            margin: 30px auto;
+
+            padding:
+                0 20px 40px;
+
+        }
+
+
+        .page-title {
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .page-title h2 {
+
+            font-size: 27px;
+
+            color: #111827;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .page-title p {
+
+            color: #64748b;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ======================================
+           ESTADÍSTICAS
+        ====================================== */
+
+        .stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .stat {
+
+            background: white;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 4px 15px
+                rgba(15,23,42,0.06);
+
+        }
+
+
+        .stat-label {
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            margin-bottom: 7px;
+
+            text-transform:
+                uppercase;
+
+        }
+
+
+        .stat-number {
+
+            font-size: 30px;
+
+            font-weight: bold;
+
+            color: #111827;
+
+        }
+
+
+        /* ======================================
+           FILTROS
+        ====================================== */
+
+        .filters {
+
+            background: white;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            padding: 18px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 4px 15px
+                rgba(15,23,42,0.05);
+
+        }
+
+
+        .filters-title {
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            color: #334155;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .filters-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 180px 180px;
+
+            gap: 12px;
+
+        }
+
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding:
+                12px 14px;
+
+            border:
+                1px solid #cbd5e1;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+
+            outline: none;
+
+            background: white;
+
+        }
+
+
+        input:focus,
+        select:focus {
+
+            border-color:
+                #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,0.10);
+
+        }
+
+
+        .filter-buttons {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 12px;
+
+        }
+
+
+        .btn {
+
+            border: none;
+
+            border-radius: 9px;
+
+            padding:
+                11px 18px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+        }
+
+
+        .btn-primary {
+
+            background:
+                #2563eb;
+
+            color: white;
+
+        }
+
+
+        .btn-primary:hover {
+
+            background:
+                #1d4ed8;
+
+        }
+
+
+        .btn-secondary {
+
+            background:
+                #e2e8f0;
+
+            color:
+                #334155;
+
+        }
+
+
+        .btn-secondary:hover {
+
+            background:
+                #cbd5e1;
+
+        }
+
+
+        /* ======================================
+           TOOLBAR
+        ====================================== */
+
+        .toolbar {
+
+            background: white;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            padding: 14px 18px;
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .results-info {
+
+            color:
+                #64748b;
+
+            font-size:
+                13px;
+
+        }
+
+
+        .btn-refresh {
+
+            border: none;
+
+            background:
+                #2563eb;
+
+            color: white;
+
+            padding:
+                10px 16px;
+
+            border-radius:
+                9px;
+
+            font-weight:
+                bold;
+
+            cursor: pointer;
+
+        }
+
+
+        .btn-refresh:hover {
+
+            background:
+                #1d4ed8;
+
+        }
+
+
+        /* ======================================
+           LISTA
+        ====================================== */
+
+        #historial {
+
+            display: flex;
+
+            flex-direction:
+                column;
+
+            gap: 14px;
+
+        }
+
+
+        /* ======================================
+           TARJETA
+        ====================================== */
+
+        .registro {
+
+            background: white;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-left:
+                5px solid #16a34a;
+
+            border-radius:
+                14px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 4px 15px
+                rgba(15,23,42,0.06);
+
+        }
+
+
+        .registro-header {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            margin-bottom:
+                18px;
+
+            gap: 15px;
+
+        }
+
+
+        .puesto-info {
+
+            display: flex;
+
+            align-items:
+                center;
+
+            gap: 12px;
+
+        }
+
+
+        .puesto-icon {
+
+            width: 45px;
+
+            height: 45px;
+
+            background:
+                #eff6ff;
+
+            border-radius:
+                10px;
+
+            display: flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            font-size: 22px;
+
+        }
+
+
+        .puesto-codigo {
+
+            font-size:
+                20px;
+
+            font-weight:
+                bold;
+
+            color:
+                #111827;
+
+        }
+
+
+        .puesto-nombre {
+
+            font-size:
+                13px;
+
+            color:
+                #64748b;
+
+            margin-top:
+                3px;
+
+        }
+
+
+        .puesto-linea {
+
+            font-size:
+                12px;
+
+            color:
+                #2563eb;
+
+            font-weight:
+                bold;
+
+            margin-top:
+                3px;
+
+        }
+
+
+        .estado {
+
+            background:
+                #dcfce7;
+
+            color:
+                #15803d;
+
+            padding:
+                7px 12px;
+
+            border-radius:
+                20px;
+
+            font-size:
+                11px;
+
+            font-weight:
+                bold;
+
+            white-space:
+                nowrap;
+
+        }
+
+
+        /* ======================================
+           DATOS
+        ====================================== */
+
+        .info-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-bottom:
+                15px;
+
+        }
+
+
+        .info {
+
+            background:
+                #f8fafc;
+
+            border-radius:
+                9px;
+
+            padding:
+                13px;
+
+        }
+
+
+        .info span {
+
+            display: block;
+
+            font-size:
+                10px;
+
+            color:
+                #64748b;
+
+            text-transform:
+                uppercase;
+
+            margin-bottom:
+                5px;
+
+        }
+
+
+        .info strong {
+
+            font-size:
+                16px;
+
+            color:
+                #111827;
+
+        }
+
+
+        /* ======================================
+           UBICACIÓN
+        ====================================== */
+
+        .ubicacion {
+
+            background:
+                #eff6ff;
+
+            border:
+                1px solid #bfdbfe;
+
+            border-radius:
+                10px;
+
+            padding:
+                15px;
+
+            margin-bottom:
+                15px;
+
+        }
+
+
+        .ubicacion-label {
+
+            color:
+                #64748b;
+
+            font-size:
+                10px;
+
+            text-transform:
+                uppercase;
+
+            margin-bottom:
+                5px;
+
+        }
+
+
+        .ubicacion-valor {
+
+            color:
+                #1d4ed8;
+
+            font-size:
+                21px;
+
+            font-weight:
+                bold;
+
+        }
+
+
+        /* ======================================
+           FECHAS
+        ====================================== */
+
+        .fechas {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 12px;
+
+        }
+
+
+        .fecha-box {
+
+            background:
+                #f8fafc;
+
+            border-radius:
+                9px;
+
+            padding:
+                12px;
+
+        }
+
+
+        .fecha-box span {
+
+            display: block;
+
+            color:
+                #64748b;
+
+            font-size:
+                10px;
+
+            text-transform:
+                uppercase;
+
+            margin-bottom:
+                4px;
+
+        }
+
+
+        .fecha-box strong {
+
+            color:
+                #334155;
+
+            font-size:
+                13px;
+
+        }
+
+
+        /* ======================================
+           VACÍO
+        ====================================== */
+
+        .empty {
+
+            background:
+                white;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                14px;
+
+            padding:
+                60px 20px;
+
+            text-align:
+                center;
+
+        }
+
+
+        .empty-icon {
+
+            font-size:
+                50px;
+
+            margin-bottom:
+                12px;
+
+        }
+
+
+        .empty h3 {
+
+            color:
+                #475569;
+
+            margin-bottom:
+                6px;
+
+        }
+
+
+        .empty p {
+
+            color:
+                #94a3b8;
+
+            font-size:
+                13px;
+
+        }
+
+
+        .loading {
+
+            background:
+                white;
+
+            border-radius:
+                14px;
+
+            padding:
+                50px;
+
+            text-align:
+                center;
+
+            color:
+                #64748b;
+
+        }
+
+
+        /* ======================================
+           RESPONSIVE
+        ====================================== */
+
+        @media(max-width: 850px) {
+
+            .stats {
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+
+            .filters-grid {
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+
+            .filters-grid input {
+
+                grid-column:
+                    span 2;
+
+            }
+
+
+            .info-grid {
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+        }
+
+
+        @media(max-width: 600px) {
+
+            header {
+
+                padding:
+                    16px;
+
+            }
+
+
+            .header-title h1 {
+
+                font-size:
+                    18px;
+
+            }
+
+
+            .connection {
+
+                display:
+                    none;
+
+            }
+
+
+            main {
+
+                margin-top:
+                    20px;
+
+            }
+
+
+            .stats {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .filters-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .filters-grid input {
+
+                grid-column:
+                    span 1;
+
+            }
+
+
+            .filter-buttons {
+
+                flex-direction:
+                    column;
+
+            }
+
+
+            .filter-buttons .btn {
+
+                width:
+                    100%;
+
+            }
+
+
+            .toolbar {
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    stretch;
+
+            }
+
+
+            .btn-refresh {
+
+                width:
+                    100%;
+
+            }
+
+
+            .registro-header {
+
+                align-items:
+                    flex-start;
+
+            }
+
+
+            .info-grid {
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+
+            .fechas {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ======================================
+     HEADER
+====================================== -->
+
+<header>
+
+    <div class="header-content">
+
+        <div class="logo-area">
+
+            <div class="logo">
+                📦
+            </div>
+
+            <div class="header-title">
+
+                <h1>
+                    Reposición de Materiales
+                </h1>
+
+                <p>
+                    Historial de reposiciones
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="connection">
+
+            <div class="connection-dot"></div>
+
+            Sistema conectado
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- ======================================
+     MAIN
+====================================== -->
+
+<main>
+
+
+    <div class="page-title">
+
+        <h2>
+            Historial
+        </h2>
+
+        <p>
+            Consulta de materiales que ya fueron retirados.
+        </p>
+
+    </div>
+
+
+
+    <!-- ======================================
+         ESTADÍSTICAS
+    ======================================= -->
+
+    <div class="stats">
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Total retirados
+            </div>
+
+            <div
+                class="stat-number"
+                id="totalRetirados">
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Retirados hoy
+            </div>
+
+            <div
+                class="stat-number"
+                id="retiradosHoy">
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                Mostrados
+            </div>
+
+            <div
+                class="stat-number"
+                id="totalMostrados">
+
+                0
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ======================================
+         FILTROS
+    ======================================= -->
+
+    <div class="filters">
+
+
+        <div class="filters-title">
+
+            🔎 Buscar en historial
+
+        </div>
+
+
+        <div class="filters-grid">
+
+
+            <input
+                type="text"
+                id="buscar"
+                placeholder="Puesto, diseño, operación, ubicación..."
+                oninput="aplicarFiltros()"
+            >
+
+
+            <input
+                type="date"
+                id="fechaDesde"
+                onchange="aplicarFiltros()"
+            >
+
+
+            <input
+                type="date"
+                id="fechaHasta"
+                onchange="aplicarFiltros()"
+            >
+
+
+        </div>
+
+
+        <div class="filter-buttons">
+
+
+            <button
+                class="btn btn-primary"
+                onclick="aplicarFiltros()">
+
+                🔎 Buscar
+
+            </button>
+
+
+            <button
+                class="btn btn-secondary"
+                onclick="limpiarFiltros()">
+
+                ↺ Limpiar filtros
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ======================================
+         TOOLBAR
+    ======================================= -->
+
+    <div class="toolbar">
+
+
+        <div class="results-info">
+
+            Mostrando:
+
+            <strong id="resultadoCantidad">
+                0
+            </strong>
+
+            registros
+
+        </div>
+
+
+        <button
+            class="btn-refresh"
+            onclick="cargarHistorial()">
+
+            ↻ Actualizar
+
+        </button>
+
+
+    </div>
+
+
+
+    <!-- ======================================
+         HISTORIAL
+    ====================================== -->
+
+    <div id="historial">
+
+
+        <div class="loading">
+
+            ⏳
+
+            <br><br>
+
+            Cargando historial...
+
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+
+<script>
+
+
+    // ==========================================
+    // SUPABASE
+    // ==========================================
+
+    const SUPABASE_URL =
+        "https://zdoscwyvoazrtpofrabg.supabase.co";
+
+
+    const SUPABASE_KEY =
+        "sb_publishable_N7bJtip-RJo3KTMUtIotKw_UIfk9R_H";
+
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+    // Guardamos todos los registros
+    let registros = [];
+
+    let puestos = {};
+
+
+
+    // ==========================================
+    // CARGAR HISTORIAL
+    // ==========================================
+
+    async function cargarHistorial() {
+
+
+        const contenedor =
+            document.getElementById(
+                "historial"
+            );
+
+
+        contenedor.innerHTML = `
+
+            <div class="loading">
+
+                ⏳
+
+                <br><br>
+
+                Cargando historial...
+
+            </div>
+
+        `;
+
+
+
+        // ======================================
+        // BUSCAR RETIRADOS
+        // ======================================
+
+        const respuesta =
+            await supabaseClient
+
+                .from("reposiciones")
+
+                .select("*")
+
+                .eq(
+                    "estado",
+                    "RETIRADO"
+                )
+
+                .order(
+                    "retirado_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+
+        if (respuesta.error) {
+
+
+            contenedor.innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        ❌
+                    </div>
+
+                    <h3>
+                        Error al cargar historial
+                    </h3>
+
+                    <p>
+                        ${respuesta.error.message}
+                    </p>
+
+                </div>
+
+            `;
+
+
+            console.error(
+                respuesta.error
+            );
+
+
+            return;
+
+        }
+
+
+
+        registros =
+            respuesta.data || [];
+
+
+
+        // ======================================
+        // BUSCAR PUESTOS
+        // ======================================
+
+        if (
+            registros.length > 0
+        ) {
+
+
+            const idsPuestos = [
+
+                ...new Set(
+
+                    registros.map(
+                        registro =>
+                            registro.puesto_id
+                    )
+
+                )
+
+            ];
+
+
+            const respuestaPuestos =
+                await supabaseClient
+
+                    .from("puestos")
+
+                    .select("*")
+
+                    .in(
+                        "id",
+                        idsPuestos
+                    );
+
+
+            if (
+                !respuestaPuestos.error
+            ) {
+
+
+                puestos = {};
+
+
+                respuestaPuestos.data
+                    .forEach(
+                        puesto => {
+
+                            puestos[
+                                puesto.id
+                            ] = puesto;
+
+                        }
+                    );
+
+            }
+
+        }
+
+
+
+        // ======================================
+        // ESTADÍSTICAS
+        // ======================================
+
+        actualizarEstadisticas();
+
+
+        // ======================================
+        // MOSTRAR
+        // ======================================
+
+        aplicarFiltros();
+
+    }
+
+
+
+    // ==========================================
+    // ESTADÍSTICAS
+    // ==========================================
+
+    function actualizarEstadisticas() {
+
+
+        document.getElementById(
+            "totalRetirados"
+        ).textContent =
+            registros.length;
+
+
+
+        const inicioHoy =
+            new Date();
+
+        inicioHoy.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        const cantidadHoy =
+            registros.filter(
+                registro => {
+
+                    if (
+                        !registro.retirado_at
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    return (
+                        new Date(
+                            registro.retirado_at
+                        ) >= inicioHoy
+                    );
+
+                }
+            ).length;
+
+
+        document.getElementById(
+            "retiradosHoy"
+        ).textContent =
+            cantidadHoy;
+
+    }
+
+
+
+    // ==========================================
+    // FILTROS
+    // ==========================================
+
+    function aplicarFiltros() {
+
+
+        const texto =
+            document.getElementById(
+                "buscar"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+
+        const desde =
+            document.getElementById(
+                "fechaDesde"
+            ).value;
+
+
+        const hasta =
+            document.getElementById(
+                "fechaHasta"
+            ).value;
+
+
+
+        const filtrados =
+            registros.filter(
+                registro => {
+
+
+                    const puesto =
+                        puestos[
+                            registro.puesto_id
+                        ];
+
+
+                    const codigoPuesto =
+                        puesto
+                            ? puesto.codigo
+                            : "";
+
+
+                    const nombrePuesto =
+                        puesto
+                            ? puesto.nombre
+                            : "";
+
+
+                    const linea =
+                        puesto
+                            ? puesto.linea
+                            : "";
+
+
+
+                    // --------------------------
+                    // TEXTO
+                    // --------------------------
+
+                    const contenido = (
+
+                        codigoPuesto +
+                        " " +
+
+                        nombrePuesto +
+                        " " +
+
+                        linea +
+                        " " +
+
+                        registro.operacion +
+                        " " +
+
+                        registro.diseno +
+                        " " +
+
+                        registro.ubicacion +
+                        " " +
+
+                        registro.operario +
+                        " " +
+
+                        registro.retirado_por
+
+                    )
+                    .toLowerCase();
+
+
+
+                    if (
+                        texto &&
+                        !contenido.includes(
+                            texto
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+
+
+                    // --------------------------
+                    // DESDE
+                    // --------------------------
+
+                    if (
+                        desde &&
+                        registro.retirado_at
+                    ) {
+
+
+                        const fecha =
+                            new Date(
+                                registro.retirado_at
+                            );
+
+
+                        const fechaDesde =
+                            new Date(
+                                desde +
+                                "T00:00:00"
+                            );
+
+
+                        if (
+                            fecha <
+                            fechaDesde
+                        ) {
+
+                            return false;
+
+                        }
+
+                    }
+
+
+
+                    // --------------------------
+                    // HASTA
+                    // --------------------------
+
+                    if (
+                        hasta &&
+                        registro.retirado_at
+                    ) {
+
+
+                        const fecha =
+                            new Date(
+                                registro.retirado_at
+                            );
+
+
+                        const fechaHasta =
+                            new Date(
+                                hasta +
+                                "T23:59:59"
+                            );
+
+
+                        if (
+                            fecha >
+                            fechaHasta
+                        ) {
+
+                            return false;
+
+                        }
+
+                    }
+
+
+
+                    return true;
+
+                }
+            );
+
+
+
+        document.getElementById(
+            "totalMostrados"
+        ).textContent =
+            filtrados.length;
+
+
+        document.getElementById(
+            "resultadoCantidad"
+        ).textContent =
+            filtrados.length;
+
+
+
+        mostrarRegistros(
+            filtrados
+        );
+
+    }
+
+
+
+    // ==========================================
+    // MOSTRAR REGISTROS
+    // ==========================================
+
+    function mostrarRegistros(
+        lista
+    ) {
+
+
+        const contenedor =
+            document.getElementById(
+                "historial"
+            );
+
+
+        if (
+            lista.length === 0
+        ) {
+
+
+            contenedor.innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        No se encontraron registros
+                    </h3>
+
+                    <p>
+                        Probá cambiando los filtros.
+                    </p>
+
+                </div>
+
+            `;
+
+
+            return;
+
+        }
+
+
+
+        let html = "";
+
+
+
+        lista.forEach(
+            registro => {
+
+                html +=
+                    crearRegistroHTML(
+                        registro
+                    );
+
+            }
+        );
+
+
+
+        contenedor.innerHTML =
+            html;
+
+    }
+
+
+
+    // ==========================================
+    // CREAR REGISTRO HTML
+    // ==========================================
+
+    function crearRegistroHTML(
+        registro
+    ) {
+
+
+        const puesto =
+            puestos[
+                registro.puesto_id
+            ];
+
+
+        const codigoPuesto =
+            puesto
+                ? puesto.codigo
+                : "PUESTO-" +
+                  registro.puesto_id;
+
+
+        const nombrePuesto =
+            puesto
+                ? (
+                    puesto.nombre ||
+                    "Sin nombre"
+                )
+                : "Puesto no encontrado";
+
+
+        const lineaPuesto =
+            puesto
+                ? (
+                    puesto.linea ||
+                    ""
+                )
+                : "";
+
+
+
+        const fechaPedido =
+            registro.fecha_hora
+                ? new Date(
+                    registro.fecha_hora
+                ).toLocaleString(
+                    "es-AR"
+                )
+                : "-";
+
+
+        const fechaRetiro =
+            registro.retirado_at
+                ? new Date(
+                    registro.retirado_at
+                ).toLocaleString(
+                    "es-AR"
+                )
+                : "-";
+
+
+
+        return `
+
+            <div class="registro">
+
+
+                <!-- CABECERA -->
+
+                <div class="registro-header">
+
+
+                    <div class="puesto-info">
+
+
+                        <div class="puesto-icon">
+                            📍
+                        </div>
+
+
+                        <div>
+
+
+                            <div class="puesto-codigo">
+
+                                ${codigoPuesto}
+
+                            </div>
+
+
+                            <div class="puesto-nombre">
+
+                                ${nombrePuesto}
+
+                            </div>
+
+
+                            ${
+                                lineaPuesto
+                                ? `
+                                    <div class="puesto-linea">
+
+                                        ${lineaPuesto}
+
+                                    </div>
+                                `
+                                : ""
+                            }
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="estado">
+
+                        ✓ RETIRADO
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- DATOS -->
+
+                <div class="info-grid">
+
+
+                    <div class="info">
+
+                        <span>
+                            Operación
+                        </span>
+
+                        <strong>
+                            ${registro.operacion}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span>
+                            Diseño
+                        </span>
+
+                        <strong>
+                            ${registro.diseno}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span>
+                            Cantidad
+                        </span>
+
+                        <strong>
+                            ${registro.cantidad}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- UBICACIÓN -->
+
+                <div class="ubicacion">
+
+
+                    <div class="ubicacion-label">
+
+                        📦 UBICACIÓN DEL MATERIAL
+
+                    </div>
+
+
+                    <div class="ubicacion-valor">
+
+                        ${registro.ubicacion}
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- FECHAS -->
+
+                <div class="fechas">
+
+
+                    <div class="fecha-box">
+
+                        <span>
+                            🕐 Pedido realizado
+                        </span>
+
+                        <strong>
+                            ${fechaPedido}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="fecha-box">
+
+                        <span>
+                            ✓ Material retirado
+                        </span>
+
+                        <strong>
+                            ${fechaRetiro}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="fecha-box">
+
+                        <span>
+                            👤 Operario
+                        </span>
+
+                        <strong>
+                            ${registro.operario || "-"}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="fecha-box">
+
+                        <span>
+                            👷 Repositor
+                        </span>
+
+                        <strong>
+                            ${registro.retirado_por || "-"}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        `;
+
+    }
+
+
+
+    // ==========================================
+    // LIMPIAR FILTROS
+    // ==========================================
+
+    function limpiarFiltros() {
+
+
+        document.getElementById(
+            "buscar"
+        ).value = "";
+
+
+        document.getElementById(
+            "fechaDesde"
+        ).value = "";
+
+
+        document.getElementById(
+            "fechaHasta"
+        ).value = "";
+
+
+        aplicarFiltros();
+
+    }
+
+
+
+    // ==========================================
+    // INICIAR
+    // ==========================================
+
+    cargarHistorial();
+
+</script>
+
+
+</body>
+
+</html>
