@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+```
 <title>Sistema de Reposición</title>
 
 <style>
@@ -31,6 +32,76 @@
         border-radius: 20px;
         padding: 40px;
         box-shadow: 0 10px 35px rgba(0,0,0,0.10);
+    }
+
+    /* LOGIN */
+
+    #login {
+        text-align: center;
+    }
+
+    .logo {
+        width: 260px;
+        max-width: 80%;
+        margin: 0 auto 30px auto;
+        display: block;
+    }
+
+    .login-title {
+        font-size: 28px;
+        color: #17202a;
+        margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+        color: #6b7280;
+        font-size: 15px;
+        margin-bottom: 30px;
+    }
+
+    .input-clave {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        font-size: 16px;
+        outline: none;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .input-clave:focus {
+        border-color: #17202a;
+    }
+
+    .boton-ingresar {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        background: #17202a;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .boton-ingresar:hover {
+        background: #263442;
+    }
+
+    .error {
+        color: #dc2626;
+        font-size: 14px;
+        margin-top: 15px;
+        display: none;
+    }
+
+    /* MENU */
+
+    #menu {
+        display: none;
     }
 
     .header {
@@ -104,6 +175,7 @@
     }
 
     @media (max-width: 600px) {
+
         .container {
             padding: 25px;
         }
@@ -111,8 +183,13 @@
         .header h1 {
             font-size: 26px;
         }
+
+        .login-title {
+            font-size: 24px;
+        }
     }
 </style>
+```
 
 </head>
 
@@ -120,44 +197,198 @@
 
 <div class="container">
 
-<div class="header">
-    <h1>📦 Sistema de Reposición</h1>
-    <p>Gestión de materiales y pedidos</p>
+```
+<!-- ========================= -->
+<!-- PANTALLA DE ACCESO -->
+<!-- ========================= -->
+
+<div id="login">
+
+    <img
+        class="logo"
+        src="https://www.media.stellantis.com/cache/b/1/b/0/d/b1b0de6c81a6ca391a55f3e3cadcb2bee4a96063.png"
+        alt="Stellantis">
+
+    <h1 class="login-title">
+        Sistema de Reposición
+    </h1>
+
+    <p class="login-subtitle">
+        Ingrese la clave para acceder al sistema
+    </p>
+
+    <input
+        type="password"
+        id="clave"
+        class="input-clave"
+        placeholder="Ingrese la clave"
+        autocomplete="off"
+    >
+
+    <button
+        class="boton-ingresar"
+        onclick="ingresar()">
+        INGRESAR
+    </button>
+
+    <div id="error" class="error">
+        ❌ Clave incorrecta
+    </div>
+
 </div>
 
-<div class="menu">
 
-    <a class="boton" href="escanear.html">
-        <div class="icono">📷</div>
-        <div class="texto">
-            <h2>Escanear puesto</h2>
-            <p>Escanear el código QR y solicitar material</p>
-        </div>
-    </a>
+<!-- ========================= -->
+<!-- MENÚ PRINCIPAL -->
+<!-- ========================= -->
 
-    <a class="boton" href="reposicion.html">
-        <div class="icono">📦</div>
-        <div class="texto">
-            <h2>Reposición</h2>
-            <p>Gestionar materiales pendientes</p>
-        </div>
-    </a>
+<div id="menu">
 
-    <a class="boton" href="historial.html">
-        <div class="icono">🕘</div>
-        <div class="texto">
-            <h2>Historial</h2>
-            <p>Consultar reposiciones realizadas</p>
-        </div>
-    </a>
+    <div class="header">
+
+        <img
+            class="logo"
+            src="https://www.media.stellantis.com/cache/b/1/b/0/d/b1b0de6c81a6ca391a55f3e3cadcb2bee4a96063.png"
+            alt="Stellantis">
+
+        <h1>📦 Sistema de Reposición</h1>
+
+        <p>
+            Gestión de materiales
+        </p>
+
+    </div>
+
+
+    <div class="menu">
+
+        <a class="boton" href="escanear.html">
+
+            <div class="icono">
+                📷
+            </div>
+
+            <div class="texto">
+
+                <h2>
+                    Escanear puesto
+                </h2>
+
+                <p>
+                    Escanear el código QR y solicitar material
+                </p>
+
+            </div>
+
+        </a>
+
+
+        <a class="boton" href="reposicion.html">
+
+            <div class="icono">
+                📦
+            </div>
+
+            <div class="texto">
+
+                <h2>
+                    Reposición
+                </h2>
+
+                <p>
+                    Gestionar materiales pendientes
+                </p>
+
+            </div>
+
+        </a>
+
+
+        <a class="boton" href="historial.html">
+
+            <div class="icono">
+                🕘
+            </div>
+
+            <div class="texto">
+
+                <h2>
+                    Historial
+                </h2>
+
+                <p>
+                    Consultar reposiciones realizadas
+                </p>
+
+            </div>
+
+        </a>
+
+    </div>
+
+
+    <div class="footer">
+        Sistema de gestión de materiales
+    </div>
+
+</div>
+```
 
 </div>
 
-<div class="footer">
-    Sistema de gestión de materiales
-</div>
+<script>
 
-</div>
+    // =========================
+    // CLAVE DE ACCESO
+    // =========================
+
+    const CLAVE_CORRECTA = "Reposicion2026";
+
+
+    function ingresar() {
+
+        const claveIngresada =
+            document.getElementById("clave").value;
+
+        const error =
+            document.getElementById("error");
+
+        if (claveIngresada === CLAVE_CORRECTA) {
+
+            document.getElementById("login").style.display = "none";
+
+            document.getElementById("menu").style.display = "block";
+
+            error.style.display = "none";
+
+        } else {
+
+            error.style.display = "block";
+
+            document.getElementById("clave").value = "";
+
+            document.getElementById("clave").focus();
+
+        }
+    }
+
+
+    // Permitir ingresar presionando ENTER
+
+    document.getElementById("clave").addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+
+                ingresar();
+
+            }
+
+        }
+    );
+
+</script>
 
 </body>
 </html>
